@@ -1,0 +1,13 @@
+name: NachoHorse
+main: com.spinalcraft.nachohorse.NachoHorse
+version: 1.0
+
+depend: [Spinalpack]
+
+commands:
+  claimhorse:
+    description: Claim a horse
+    usage: Usage - /claimhorse
+    permission: spinalpack.claimhorse
+    permission-message: No!
+    
