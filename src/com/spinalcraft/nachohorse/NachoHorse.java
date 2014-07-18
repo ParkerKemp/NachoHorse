@@ -68,15 +68,15 @@ public class NachoHorse extends JavaPlugin implements Listener{
 	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent event){
-		if(!(event.getRightClicked() instanceof Horse))
-			return;
-		if(!PlayerFlags.fromPlayer(event.getPlayer()).willClaim)
-			return;
-		console.sendMessage("Clicked horse.");
+		//if(!(event.getRightClicked() instanceof Horse))
+		//	return;
+		//if(!PlayerFlags.fromPlayer(event.getPlayer()).willClaim)
+		//	return;
+		//console.sendMessage("Clicked horse.");
 		
-		Player player = event.getPlayer();
+		//Player player = event.getPlayer();
 		
-		PlayerFlags.fromPlayer(player).willClaim = false;
+		//PlayerFlags.fromPlayer(player).willClaim = false;
 	}
 	
 	@EventHandler(priority = EventPriority.NORMAL)
