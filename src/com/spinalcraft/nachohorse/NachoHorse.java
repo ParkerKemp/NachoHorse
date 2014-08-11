@@ -10,6 +10,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityTameEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -41,16 +44,46 @@ public class NachoHorse extends JavaPlugin implements Listener{
 			return;
 		
 		Horse horse = (Horse)event.getRightClicked();
-		String ownerName = Spinalpack.petOwner(horse.getUniqueId());
-		
-		if(ownerName == null)
-			return;
-		
 		Player player = event.getPlayer();
 		
-		if(!player.getName().equals(ownerName)){
+		if(!playerOwnsHorse(player, horse)){
 			event.setCancelled(true);
 			player.sendMessage(Spinalpack.code(Co.RED) + "That's not your horse!");
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onEntityDeath(EntityDeathEvent event){
+		event.getEntity().getKiller();
+	}
+	
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onEntityDamage(EntityDamageEvent event){
+		if(event.getEntityType() != EntityType.HORSE)
+			return;
+		
+		Horse horse = (Horse)event.getEntity();
+		
+		if(Spinalpack.petOwner(horse.getUniqueId()) == null)
+			return;
+		
+		if(!(event instanceof EntityDamageByEntityEvent)){
+			event.setCancelled(true);
+			return;
+		}
+		
+		EntityDamageByEntityEvent damagedByEvent = (EntityDamageByEntityEvent)event;
+		
+		if(!(damagedByEvent.getDamager() instanceof Player)){
+			event.setCancelled(true);
+			return;
+		}
+		
+		Player player = (Player)damagedByEvent.getDamager();
+		
+		if(!playerOwnsHorse(player, horse)){
+			event.setCancelled(true);
+			return;
 		}
 	}
 	
@@ -63,6 +96,10 @@ public class NachoHorse extends JavaPlugin implements Listener{
 		Horse horse = (Horse)event.getEntity();
 		Player player = (Player)event.getOwner();
 		Spinalpack.insertPet(player, horse);
+	}
+	
+	private boolean playerOwnsHorse(Player player, Horse horse){
+		return player.getName().equals(Spinalpack.petOwner(horse.getUniqueId()));
 	}
 	
 	@Override
